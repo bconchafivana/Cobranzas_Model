@@ -82,7 +82,7 @@ CASE WHEN d.sii_executive_merit = 1 THEN 1
 	ELSE 0 END AS merit,
 d.financed_balance , d.finance_amount , ancestor.finance_amount as original_finance_amount,
 DATEDIFF(CURDATE(), d.custom_expiration_utc) as mora_days , d.debtor_category , d.judicial_cause_id , d.document_type , 
-d.last_management , d.last_management_date , d.normalization_executive_name, d.normalization_executive_id, d.last_payment_date 
+d.last_management , d.last_management_date , d.normalization_executive_name, d.normalization_executive_id, d.last_payment_date , d.custom_expiration_utc 
 from
 fc_operations op 
 -- datos del que pagó un doc
@@ -97,7 +97,7 @@ CASE WHEN d.sii_executive_merit = 1 THEN 1
 	ELSE 0 END AS merit,
 d.financed_balance , d.finance_amount , ancestor.finance_amount as original_finance_amount, 
 DATEDIFF(CURDATE(), d.custom_expiration_utc) as mora_days , d.debtor_category , d.judicial_cause_id , d.document_type ,
-d.last_management , d.last_management_date , d.normalization_executive_name, d.normalization_executive_id, d.last_payment_date 
+d.last_management , d.last_management_date , d.normalization_executive_name, d.normalization_executive_id, d.last_payment_date , d.custom_expiration_utc 
 FROM ancestor
 -- datos del ancestor
 LEFT JOIN fc_documents d ON d.document_id = ancestor.document_id
@@ -114,7 +114,7 @@ LEFT JOIN fc_documents d ON d.document_id = ancestor.document_id
 	ELSE 'Mora > 365' END AS mora_category, debtor_category,
 	CASE WHEN debtor_category = 'P' THEN 1
 	ELSE 0 END AS gobierno, judicial_cause_id, document_type,
-	last_management , last_management_date , normalization_executive_name, normalization_executive_id, last_payment_date 
+	last_management , last_management_date , normalization_executive_name, normalization_executive_id, last_payment_date , custom_expiration_utc
 	from df
 	group by document_id 
 	
