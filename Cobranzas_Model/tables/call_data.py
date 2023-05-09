@@ -15,7 +15,6 @@ select  d.document_id
  inner join fc_rf_operation_documents od on o.operation_id=od.operation_id
  inner join fc_documents d on d.document_id = od.document_id
  WHERE d.operation IS NOT NULL AND d.status = 2
- AND d.backoffice_status != 'Cas'
  AND (d.deleted is null OR d.deleted = 0)
  AND financed_balance > 1000000"""
  
