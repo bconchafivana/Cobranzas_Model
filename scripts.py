@@ -91,4 +91,30 @@ def branchesDown(complete_branches, data):
     df_concats = pd.concat([complete_branches_toconcat_data, df_concats])
   return df_concats.dropna(subset = ['document_id']).drop_duplicates()
 
+# assign normalizacion executive to all documents asociated with a branch
+def reassign_normalization_executive(complete_branches_with_data):
+  """reasignamos ejecutivo de normalización acorde a 
+  el primer documento de la rama, es decir, acorde al 
+  documento que está en cartera se le asignan todos los 
+  documentos que estan asociados a este en el pasado"""
+  #buscamos datos de ejecutivos de normalización
+  executives = complete_branches_with_data.filter(regex='normalization_executive_name')
+  #buscamos los documentos
+  complete_branches = complete_branches_with_data.filter(regex = 'document_id')
+  ex_rama = executives['1_normalization_executive_name']
+  #asignamos a todos los documentos el ejecutivo del primero en la rama 1_document_id
+  for column in executives.columns:
+    executives[column] = ex_rama
+  #unimos ejecutivos con los documentos lado a lado
+  complete_executives = complete_branches.join(executives)
+  #para cada documento tomamos su ejecutivo reasignado y lo ponemos hacia abajo
+  assigned_executives = pd.DataFrame()
+  for i in range(1,len(complete_branches.columns)):
+    par = complete_executives.filter(regex = str(i))
+    par.rename(columns = {par.columns[0]:'document_id', par.columns[1]: 'normalization_executive_name_pbi'}, inplace = True)
+    assigned_executives = pd.concat([par, assigned_executives])
+    #por la naturaleza de las ramas, se duplican los documentos, al ponerlos hacia abajo eliminamos duplicados
+  return assigned_executives.dropna(subset = ['document_id']).drop_duplicates()
+executive_with_document = reassign_normalization_executive(complete_branches_with_data)
+
 
